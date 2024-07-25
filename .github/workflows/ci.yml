@@ -1,0 +1,30 @@
+name: automated-tests
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  PORT: ${{ secrets.PORT }}
+
+jobs:
+  test_server:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install dependencies and run tests
+      run: |
+        npm ci
+        export PORT=$PORT
+        npm run ci-test
+
+    - name: Test Failure
+      if: failure()
+      run: echo "Tests failed. Please check the logs for details."
