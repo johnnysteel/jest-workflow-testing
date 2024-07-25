@@ -23,7 +23,7 @@ describe('GET /', () => {
 describe('GET /non-existent', () => {
   it('should return 404 for non-existent route', async () => {
     const res = await request(server).get('/non-existent');
-    expect(res.statusCode).toEqual(405);
+    expect(res.statusCode).toEqual(404);
   });
 });
 
@@ -37,7 +37,7 @@ describe('POST /echo', () => {
       .post('/echo')
       .send(data)
       .set('Accept', 'application/json');
-    expect(res.statusCode).toEqual(202);
+    expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual(data);
   });
 });
