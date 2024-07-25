@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.546">
+  <testsuite name="GET /" errors="0" failures="0" skipped="0" timestamp="2024-07-25T21:24:12" time="2.435" tests="3">
+    <testcase classname="GET / should return Hello World" name="GET / should return Hello World" time="0.037">
+    </testcase>
+    <testcase classname="GET /non-existent should return 404 for non-existent route" name="GET /non-existent should return 404 for non-existent route" time="0.016">
+    </testcase>
+    <testcase classname="POST /echo should echo the posted data" name="POST /echo should echo the posted data" time="0.036">
+    </testcase>
+  </testsuite>
+</testsuites>

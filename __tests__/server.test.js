@@ -1,33 +1,49 @@
-// server/index.js
-const express = require('express');
-const redis = require('redis');
-const app = express();
-const port = process.env.PORT || 3000;
+// __tests__/server.test.js
+const request = require('supertest');
+const { app, client, connectToRedis, disconnectFromRedis } = require('../server/index');
 
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-const client = redis.createClient({
-  url: redisUrl
+let server;
+
+beforeAll(async () => {
+  client.on('error', (err) => console.error('Redis Client Error', err));
+  await connectToRedis();
 });
 
-client.on('error', (err) => console.error('Redis Client Error', err));
-client.connect().then(() => {
-  console.log('Connected to Redis');
+afterAll(async () => {
+  await disconnectFromRedis();
 });
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+beforeEach((done) => {
+  server = app.listen(3001, done);  // Use a different port to avoid conflict
 });
 
-app.post('/echo', (req, res) => {
-  res.json(req.body);
+afterEach((done) => {
+  server.close(done);
 });
 
-if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+describe('GET /', () => {
+  it('should return Hello World', async () => {
+    const res = await request(server).get('/');
+    expect(res.statusCode).toEqual(200);
+    expect(res.text).toBe('Hello World!');
   });
-}
+});
 
-module.exports = app;
+describe('GET /non-existent', () => {
+  it('should return 404 for non-existent route', async () => {
+    const res = await request(server).get('/non-existent');
+    expect(res.statusCode).toEqual(404);
+  });
+});
+
+describe('POST /echo', () => {
+  it('should echo the posted data', async () => {
+    const data = { message: 'Hello, World!' };
+    const res = await request(server)
+      .post('/echo')
+      .send(data)
+      .set('Accept', 'application/json');
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(data);
+  });
+});
