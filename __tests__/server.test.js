@@ -16,6 +16,28 @@ describe('GET /', () => {
   it('should return Hello World', async () => {
     const res = await request(server).get('/');
     expect(res.statusCode).toEqual(200);
-    expect(res.text).toBe('Hello Worlds!');
+    expect(res.text).toBe('Hello World!');
+  });
+});
+
+describe('GET /non-existent', () => {
+  it('should return 404 for non-existent route', async () => {
+    const res = await request(server).get('/non-existent');
+    expect(res.statusCode).toEqual(404);
+  });
+});
+
+// Add a mock POST route for testing in server/index.js
+// app.post('/echo', (req, res) => res.json(req.body));
+
+describe('POST /echo', () => {
+  it('should echo the posted data', async () => {
+    const data = { message: 'Hello, World!' };
+    const res = await request(server)
+      .post('/echo')
+      .send(data)
+      .set('Accept', 'application/json');
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(data);
   });
 });
