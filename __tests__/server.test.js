@@ -5,7 +5,7 @@ const app = require('../server/index');
 let server;
 
 beforeEach((done) => {
-  server = app.listen(3001, done);  // Use a different port to avoid conflict
+  server = app.listen(3000, done);  // Use a different port to avoid conflict
 });
 
 afterEach((done) => {
