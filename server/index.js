@@ -1,9 +1,20 @@
 // server/index.js
 const express = require('express');
+const redis = require('redis');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json()); // Add middleware to parse JSON bodies
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+const client = redis.createClient({
+  url: redisUrl
+});
+
+client.on('error', (err) => console.error('Redis Client Error', err));
+client.connect().then(() => {
+  console.log('Connected to Redis');
+});
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
