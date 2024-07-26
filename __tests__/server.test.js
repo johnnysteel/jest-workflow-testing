@@ -1,6 +1,6 @@
 // __tests__/server.test.js
 const request = require('supertest');
-const { app, client, connectToRedis, disconnectFromRedis } = require('../server/index');
+const { app, client, connectToRedis } = require('../server/index');
 
 let server;
 
@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await disconnectFromRedis();
+  await client.disconnect();
 });
 
 beforeEach((done) => {

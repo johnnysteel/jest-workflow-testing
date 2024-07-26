@@ -12,17 +12,8 @@ const client = redis.createClient({
 client.on('error', (err) => console.error('Redis Client Error', err));
 
 async function connectToRedis() {
-  if (!client.isOpen) {
-    await client.connect();
-    console.log('Connected to Redis');
-  }
-}
-
-async function disconnectFromRedis() {
-  if (client.isOpen) {
-    await client.disconnect();
-    console.log('Disconnected from Redis');
-  }
+  await client.connect();
+  console.log('Connected to Redis');
 }
 
 app.use(express.json());
@@ -45,4 +36,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, client, connectToRedis, disconnectFromRedis };
+module.exports = { app, client, connectToRedis };

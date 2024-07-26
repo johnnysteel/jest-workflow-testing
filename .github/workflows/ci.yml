@@ -12,13 +12,6 @@ jobs:
   test_server:
     runs-on: ubuntu-latest
 
-    services:
-      redis:
-        image: redis
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-        ports:
-          - 6379:6379
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -28,20 +21,10 @@ jobs:
       with:
         node-version: '20'
 
-       # Performs a clean installation of all dependencies in the `package.json` file
-  # For more information, see https://docs.npmjs.com/cli/ci.html
-    - name: Install dependencies
-      run: npm ci   
-
-    - name: Wait for Redis to be ready
-      run: |
-        for i in {1..10}; do
-          if redis-cli -h localhost ping | grep PONG; then
-            break
-          fi
-          echo "Waiting for Redis..."
-          sleep 1
-        done
+    - name: Start Redis
+      uses: supercharge/redis-github-action@1.7.0
+      with:
+        redis-version: '7'
 
     - name: Install dependencies and run tests
       run: |
